@@ -26,11 +26,11 @@ const PostDetails = () => {
         }
     }, [post]);
 
-   useEffect(() => {
-     console.log(posts);
-     const recommendedPosts = posts.filter(({ _id }) => _id !== post._id);
-     console.log(recommendedPosts);
-   }, [posts, post])
+//    useEffect(() => {
+//      console.log(posts);
+//      const recommendedPosts = posts.filter(({ _id }) => _id !== post._id);
+//      console.log(recommendedPosts);
+//    }, [posts, post])
 
     if (!post) {
         return null;
