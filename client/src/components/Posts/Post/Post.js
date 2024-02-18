@@ -5,13 +5,13 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import MoreHorzIcon from '@material-ui/icons/MoreHoriz';
 import ThumbUpAltOutlined from '@material-ui/icons/ThumbUpAltOutlined';
 import moment from 'moment';
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import useStyles from './styles';
 import { useDispatch } from 'react-redux';
 import { deletePost, likePost } from "../../../actions/posts";
 const Post = ({ post, setCurrentId }) => {
     const classes = useStyles();
-    const history = useHistory();
+    const navigate = useNavigate();
     const dispatch = useDispatch();
     const user = JSON.parse(localStorage.getItem('profile'));
     const [likes, setLikes] = useState(post?.likes);
@@ -39,7 +39,7 @@ const Post = ({ post, setCurrentId }) => {
     };
 
     const openPost = (e) => {
-        history.push(`/posts/${post._id}`)
+        navigate(`/posts/${post._id}`)
     }
     return (
         <Card className={classes.card} raised elevation={6}>

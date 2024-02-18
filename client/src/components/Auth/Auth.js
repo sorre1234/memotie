@@ -3,7 +3,7 @@ import { Avatar, Button, Paper, Grid, Typography, Container, TextField } from '@
 import useStyles from './styles';
 import { useDispatch } from 'react-redux';
 import { GoogleLogin, GoogleOAuthProvider } from '@react-oauth/google';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Input from "./Input";
 import { signin, signup, googlesignin } from '../../actions/auth';
@@ -13,19 +13,18 @@ const initialState = { firstName: '', lastName: '', email: '', password: '', con
 
 const Auth = (props) => {
   const classes = useStyles();
-
   const [showPassword, setShowPassword] = useState(false);
   const [isSignup, setIsSignup] = useState(false);
   const [formData, setFormData] = useState(initialState);
   const dispatch = useDispatch();
-  const history = useHistory();
+  const navigate = useNavigate();
   const handleShowPassword = () => setShowPassword((prevShowPassword) => !prevShowPassword)
   const handleSubmit = (e) => {
     e.preventDefault();
     if (isSignup) {
-      dispatch(signup(formData, history));
+      dispatch(signup(formData, navigate));
     } else {
-      dispatch(signin(formData, history));
+      dispatch(signin(formData, navigate));
     }
   };
 
@@ -45,12 +44,10 @@ const Auth = (props) => {
     const decoded = jwtDecode(credentialResponse?.credential);
     const result = decoded;
     try {//new
-      dispatch(googlesignin(result, history));
+      dispatch(googlesignin(result, navigate));
     } catch (error) {//new
       console.log(error);//new
     }//new
-    console.log(credentialResponse);
-    console.log(result);
   }
 
 
@@ -69,7 +66,7 @@ const Auth = (props) => {
               {
                 isSignup && (
                   <>
-                    <Input name="firstName" label="First Name" handleChange={handleChange} half />
+                    <Input name="firstName" label="First Name" handleChange={handleChange} autoFocus half />
                     <Input name="lastName" label="Last Name" handleChange={handleChange} half />
                   </>
                 )
@@ -99,7 +96,7 @@ const Auth = (props) => {
               onError={googleFailure}
             />
 
-            <Grid container justify="flex-end">
+            <Grid container justifyContent="flex-end">
               <Grid>
                 <Button onClick={switchMode}>
                   {isSignup ? 'Already have an account? Sign In' : "Don't have an account? Sign Up  "}

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react"
 import { Container, Grow, Grid, Paper, AppBar, TextField, Button } from '@material-ui/core';
 import { useDispatch } from 'react-redux';
-import { useHistory, useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import Chipinput from 'material-ui-chip-input';
 import Pagination from '../Pagination';
 import { getPosts, getPostsBySearch } from '../../actions/posts';
@@ -16,7 +16,7 @@ const Home = () => {
     const [currentId, setCurrentId] = useState(null);
     const dispatch = useDispatch();
     const query = useQuery();
-    const history = useHistory();
+    const navigate = useNavigate();
     const page = query.get('page') || 1;
     const searchQuery = query.get('searchQuery');
     const classes = useStyles();
@@ -31,9 +31,9 @@ const Home = () => {
         if (search.trim() || tags) {
             //dispatch -> fetch search post
             dispatch(getPostsBySearch({ search, tags: tags.join(',') }));
-            history.push(`/posts/search?searchQuery=${search || 'none'}&tags=${tags.join(',')}`);
+            navigate(`/posts/search?searchQuery=${search || 'none'}&tags=${tags.join(',')}`);
         } else {
-            history.push('/');
+            navigate('/');
         }
     }
 
