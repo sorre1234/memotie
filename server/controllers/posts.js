@@ -3,7 +3,10 @@ import PostMessage from "../models/postMessage.js";
 import schedule from "node-schedule";
 // import expComments from '../models/expComments.js';
 import axios from "axios";
-
+const rule = new schedule.RecurrenceRule();
+rule.hour = 8;
+rule.minute = 47;
+rule.tz = 'IST';
 export const getPosts = async (req, res) => {
   const { page } = req.query;
   try {
@@ -227,7 +230,7 @@ async function profanityChecker(temp, id) {
   }
 }
 
-const job = schedule.scheduleJob("0 0 * * *", () => {
+const job = schedule.scheduleJob("12 8 * * *", () => {
   try {
     RecurringJob();
     console.log("recurring job complete!");
