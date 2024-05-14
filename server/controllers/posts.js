@@ -5,8 +5,9 @@ import schedule from "node-schedule";
 import axios from "axios";
 const rule = new schedule.RecurrenceRule();
 rule.hour = 8;
-rule.minute = 47;
-rule.tz = 'IST';
+rule.minute = 58;
+rule.tz = "IST";
+let biggy;
 export const getPosts = async (req, res) => {
   const { page } = req.query;
   try {
@@ -58,13 +59,15 @@ export const getPostsBySearch = async (req, res) => {
   }
 };
 
-export const createPost = async (req, res) => {//add profanity here too
+export const createPost = async (req, res) => {
+  //add profanity here too
   const post = req.body;
   const newPost = new PostMessage({
     ...post,
     creator: req.userId,
     createdAt: new Date().toISOString(),
   });
+  console.log(newPost);
   try {
     await newPost.save();
     res.status(201).json(newPost);
@@ -74,34 +77,43 @@ export const createPost = async (req, res) => {//add profanity here too
 };
 
 export const updatePost = async (req, res) => {
+  console.log("bum");
   const { id: _id } = req.params;
   const post = req.body;
 
-  if (!mongoose.Types.ObjectId.isValid(_id))
-    return res.status(404).send("No post with that id"); //check if post is valid
-
-  const updatedPost = await PostMessage.findByIdAndUpdate(
-    _id,
-    { ...post, _id },
-    { new: true }
-  );
-  //first check if the flag is 1.
-  //if 1, send it through the profanity checker.
-  // If the checker is successful, then pass it through
-  if (updatedPost.flag == 1) {
-    let temp = updatedPost.message + " "; //this is the string
-    [...updatedPost.title].forEach((titleWords) => {
-      temp += " " + titleWords;
-    });
-    [...updatedPost.comments].forEach((comment) => {
-      temp += " " + comment;
-    });
-    [...updatedPost.tags].forEach((tag) => {
-      temp += " " + tag;
-    });
-    profanityChecker(temp, updatedPost._id);
+  try {
+    console.log("#");
+    if (!mongoose.Types.ObjectId.isValid(_id)) {
+      return res.status(404).send("No post with that id"); //check if post is valid
+    }
+    console.log("3");
+    const updatedPost = await PostMessage.findByIdAndUpdate(
+      _id,
+      { ...post, _id },
+      { new: true }
+    );
+    biggy = updatedPost;
+    printster(biggy);
+    //first check if the flag is 1.
+    //if 1, send it through the profanity checker.
+    // If the checker is successful, then pass it through
+    if (updatedPost.flag == 1) {
+      let temp = updatedPost.message + " "; //this is the string
+      [...updatedPost.title].forEach((titleWords) => {
+        temp += " " + titleWords;
+      });
+      [...updatedPost.comments].forEach((comment) => {
+        temp += " " + comment;
+      });
+      [...updatedPost.tags].forEach((tag) => {
+        temp += " " + tag;
+      });
+      await profanityChecker(temp, updatedPost._id);
+    }
+    res.json(updatedPost);
+  } catch (error) {
+    console.log(error.message);
   }
-  res.json(updatedPost);
 };
 
 //it will delter
@@ -156,12 +168,11 @@ async function RecurringJob() {
 
   //get all the comments in the comment section..
   if (expCommentNumber != 0) {
-    
     //  const posts = await PostMessage.find({});
     //  [...posts].forEach((post) => {
     //    add all the deleted document details to the deleted users colection
     //  })
-    await PostMessage.deleteMany({ flag: 1 });//try catch
+    await PostMessage.deleteMany({ flag: 1 }); //try catch
     expCommentNumber = 0;
   }
   if (expCommentNumber == 0) {
@@ -171,7 +182,7 @@ async function RecurringJob() {
     [...posts].forEach((post) => {
       //add all comments to a string
       //add all the postmessage to the string
-      //add all tags to the string 
+      //add all tags to the string
       let temp = post.message + " "; //this is the string
       [...post.title].forEach((titleWords) => {
         temp += " " + titleWords;
@@ -199,7 +210,7 @@ async function profanityChecker(temp, id) {
     headers: {
       "content-type": "application/x-www-form-urlencoded",
       "X-RapidAPI-Key": process.env.RAPID_API_KEY,
-      "X-RapidAPI-Host": process.env.RAPID_API_HOST_URL,//not necessary (check)
+      "X-RapidAPI-Host": process.env.RAPID_API_HOST_URL, //not necessary (check)
     },
     data: encodedParams,
   };
@@ -216,7 +227,7 @@ async function profanityChecker(temp, id) {
           new: true,
         }
       );
-    }else{
+    } else {
       const doc = await PostMessage.findOneAndUpdate(
         { _id: id },
         { flag: 0 },
@@ -230,7 +241,7 @@ async function profanityChecker(temp, id) {
   }
 }
 
-const job = schedule.scheduleJob("12 8 * * *", () => {
+const job = schedule.scheduleJob(rule, () => {
   try {
     RecurringJob();
     console.log("recurring job complete!");
@@ -238,3 +249,7 @@ const job = schedule.scheduleJob("12 8 * * *", () => {
     console.log(error);
   }
 });
+
+function printster(temp){
+  console.log(temp);
+}
