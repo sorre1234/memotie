@@ -73,7 +73,7 @@ const PostDetails = () => {
                 <div className={classes.section}>
                     <Typography gutterBottom variant="h5">You might also like:</Typography>
                     <Divider />
-                    <div className={classes.recommendedPosts}>
+                    <div className={classes.recommendedposts}>
                         {recommendedPosts.map(({ title, message, name, likes, selectedFile, _id }) => (
                             <div style={{ margin: '20px', cursor: "pointer" }} onClick={() => openPost(_id)} key={_id}>
                                 <Typography gutterBottom variant="h6">{title}</Typography>
