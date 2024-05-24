@@ -34,6 +34,18 @@ Then doing the same in the server directory,
 ```
 This ensures that all npm packages, along with their specified versions from the project's package.json file, are installed in your local machine.
 
+Create a new .env file in the server directory and include the following content within it: (as mentioned in the .env.example file)
+
+```
+CONNECTION_URL = < your_mongodb_connection_url >  
+PORT = < your_port >
+SECRET_FOR_TOKEN = < your_secret_for_token >
+RAPID_API_URL_PROFANITY = < your_rapid_api_url_profanity_filter >
+RAPID_API_KEY = < your_rapid_api_key >
+RAPID_API_HOST_URL = < your_rapid_api_host_url >
+```
+
+
 
 ## Deployment
 
