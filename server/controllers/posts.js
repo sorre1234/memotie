@@ -5,7 +5,7 @@ import schedule from "node-schedule";
 import axios from "axios";
 const rule = new schedule.RecurrenceRule();
 rule.hour = 0;
-rule.minute = 00;
+rule.minute = 0;
 rule.tz = "IST";
 let biggy;
 export const getPosts = async (req, res) => {
