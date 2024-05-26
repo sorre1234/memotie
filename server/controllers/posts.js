@@ -4,8 +4,8 @@ import schedule from "node-schedule";
 // import expComments from '../models/expComments.js';
 import axios from "axios";
 const rule = new schedule.RecurrenceRule();
-rule.hour = 8;
-rule.minute = 58;
+rule.hour = 0;
+rule.minute = 00;
 rule.tz = "IST";
 let biggy;
 export const getPosts = async (req, res) => {
